@@ -31,11 +31,11 @@ and `SCRIPTNAME` can be, for example, `gtusc_110dimer_1-220GCN4_nointra110xlinks
 
 ### Analysis
 
+Good scoring models were selected using `imp-sampcon` as shown in `scripts/analysis/get_gsms.sh`
 
+Sampling exhaustiveness tests were performed using `imp-sampcon` as shown in `scripts/analysis/sampcon.sh`
 
-
-
-
+Crosslink violations were analyzed using `scripts/analysis/get_xlink_violations_gtuscSpc110.py`
 
 ## Results
 
