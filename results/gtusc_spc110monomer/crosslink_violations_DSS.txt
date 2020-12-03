@@ -1,0 +1,9 @@
+Violated  ('Spc98', '103', 'Spc110', '41')
+Violated  ('Spc97', '346', 'Spc110', '168')
+Violated  ('Spc97', '164', 'Spc110', '41')
+Violated  ('Spc98', '704', 'Spc110', '207')
+Violated  ('Spc97', '114', 'Spc110', '101')
+Violated  ('Spc98', '396', 'Spc110', '101')
+Violated  ('Spc97', '164', 'Spc110', '26')
+Violated  ('Spc97', '164', 'Spc110', '101')
+Number of crosslinks violated in all models 8

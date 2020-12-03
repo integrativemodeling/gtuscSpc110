@@ -1,0 +1,4 @@
+Violated  ('Spc97', '346', 'Spc110', '168')
+Violated  ('Spc97', '164', 'Spc110', '26')
+Violated  ('Spc98', '704', 'Spc110', '207')
+Number of crosslinks violated in all models 3
