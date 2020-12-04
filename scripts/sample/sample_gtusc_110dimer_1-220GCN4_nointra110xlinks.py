@@ -41,8 +41,10 @@ def add_spc110_rep(mol,gtusc_pdbfile,gtusc_chain,gtusc_pdb_offset,unstructured_b
 
 ###################### SYSTEM SETUP #####################
 # Parameters to tweak
-runType = sys.argv[1] # "prod" for production run and "test" for test run
 
+nframes = 10000
+if '--test' in sys.argv:
+    num_frames = 1000
 
 spc110_seq_file = '../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
 
@@ -227,11 +229,7 @@ IMP.pmi.tools.shuffle_configuration([spc110_mols[0][0:163],spc110_mols[1][0:163]
 # Quickly move all flexible beads into place
 dof.optimize_flexible_beads(100)
 
-if runType == "prod":
-    nframes = 10000
 
-elif runType == "test":
-    nframes = 1000
 
 # Run replica exchange Monte Carlo sampling
 mc1=IMP.pmi.macros.ReplicaExchange0(mdl,
