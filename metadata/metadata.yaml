@@ -1,7 +1,5 @@
 title: γTuSC-Spc110 Complex
 tags: [chemical crosslinks, cryo-EM, X-ray]
-pmid: 
-accessions: [PDBDEV_]
 prereqs: [python/scikit, python/matplotlib, python/numpy]
 test:
     runtime: 24h
