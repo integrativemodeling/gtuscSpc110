@@ -1,0 +1,143 @@
+data_model
+_entry.id model
+_struct.entry_id model
+_struct.title 'Integrative structure and function of the yeast gammaTuSC-Spc110 complex'
+_audit_conform.dict_location https://raw.githubusercontent.com/ihmwg/IHM-dictionary/b4fe8af/ihm-extension.dic
+_audit_conform.dict_name ihm-extension.dic
+_audit_conform.dict_version 1.09
+#
+loop_
+_software.pdbx_ordinal
+_software.name
+_software.classification
+_software.description
+_software.version
+_software.type
+_software.location
+1 'IMP PMI module' 'integrative model building' 'integrative model building'
+2.14.0 program https://integrativemodeling.org
+2 'Integrative Modeling Platform (IMP)' 'integrative model building'
+'integrative model building' 2.14.0 program https://integrativemodeling.org
+#
+#
+loop_
+_chem_comp.id
+_chem_comp.type
+_chem_comp.name
+_chem_comp.formula
+_chem_comp.formula_weight
+ALA 'L-peptide linking' ALANINE 'C3 H7 N O2' 89.094
+ARG 'L-peptide linking' ARGININE 'C6 H15 N4 O2 1' 175.212
+ASN 'L-peptide linking' ASPARAGINE 'C4 H8 N2 O3' 132.119
+ASP 'L-peptide linking' 'ASPARTIC ACID' 'C4 H7 N O4' 133.103
+CYS 'L-peptide linking' CYSTEINE 'C3 H7 N O2 S' 121.154
+GLN 'L-peptide linking' GLUTAMINE 'C5 H10 N2 O3' 146.146
+GLU 'L-peptide linking' 'GLUTAMIC ACID' 'C5 H9 N O4' 147.130
+GLY 'peptide linking' GLYCINE 'C2 H5 N O2' 75.067
+HIS 'L-peptide linking' HISTIDINE 'C6 H10 N3 O2 1' 156.165
+ILE 'L-peptide linking' ISOLEUCINE 'C6 H13 N O2' 131.175
+LEU 'L-peptide linking' LEUCINE 'C6 H13 N O2' 131.175
+LYS 'L-peptide linking' LYSINE 'C6 H15 N2 O2 1' 147.198
+MET 'L-peptide linking' METHIONINE 'C5 H11 N O2 S' 149.208
+PHE 'L-peptide linking' PHENYLALANINE 'C9 H11 N O2' 165.192
+PRO 'L-peptide linking' PROLINE 'C5 H9 N O2' 115.132
+SER 'L-peptide linking' SERINE 'C3 H7 N O3' 105.093
+THR 'L-peptide linking' THREONINE 'C4 H9 N O3' 119.120
+TRP 'L-peptide linking' TRYPTOPHAN 'C11 H12 N2 O2' 204.229
+TYR 'L-peptide linking' TYROSINE 'C9 H11 N O3' 181.191
+VAL 'L-peptide linking' VALINE 'C5 H11 N O2' 117.148
+#
+#
+loop_
+_ihm_chemical_component_descriptor.id
+_ihm_chemical_component_descriptor.auth_name
+_ihm_chemical_component_descriptor.chemical_name
+_ihm_chemical_component_descriptor.common_name
+_ihm_chemical_component_descriptor.smiles
+_ihm_chemical_component_descriptor.smiles_canonical
+_ihm_chemical_component_descriptor.inchi
+_ihm_chemical_component_descriptor.inchi_key
+1 EDC 1-ethyl-3-(3-dimethylaminopropyl)carbodiimide . CCN=C=NCCCN(C)C .
+1S/C8H17N3/c1-4-9-8-10-6-5-7-11(2)3/h4-7H2,1-3H3 LMDZBCPBFSXMTL-UHFFFAOYSA-N
+2 DSS 'disuccinimidyl suberate' . C1CC(=O)N(C1=O)OC(=O)CCCCCCC(=O)ON2C(=O)CCC2=O
+.
+1S/C16H20N2O8/c19-11-7-8-12(20)17(11)25-15(23)5-3-1-2-4-6-16(24)26-18-13(21)9-10-14(18)22/h1-10H2
+ZWIBGKZDAWNIFC-UHFFFAOYSA-N
+#
+#
+loop_
+_entity.id
+_entity.type
+_entity.src_method
+_entity.pdbx_description
+_entity.formula_weight
+_entity.pdbx_number_of_molecules
+_entity.details
+1 polymer man Spc97 111750.362 1 .
+2 polymer man Spc98 113560.397 1 .
+3 polymer man Tub4 61237.174 1 .
+4 polymer man Spc110 29575.349 1 .
+#
+#
+loop_
+_entity_src_gen.entity_id
+_entity_src_gen.pdbx_src_id
+_entity_src_gen.pdbx_gene_src_ncbi_taxonomy_id
+_entity_src_gen.pdbx_gene_src_scientific_name
+_entity_src_gen.gene_src_common_name
+_entity_src_gen.gene_src_strain
+_entity_src_gen.pdbx_host_org_ncbi_taxonomy_id
+_entity_src_gen.pdbx_host_org_scientific_name
+_entity_src_gen.host_org_common_name
+_entity_src_gen.pdbx_host_org_strain
+1 1 4932 'SACCHAROMYCES CEREVISIAE' "BAKER'S YEAST" . 10469
+'UNIDENTIFIED BACULOVIRUS' . .
+2 2 4932 'SACCHAROMYCES CEREVISIAE' "BAKER'S YEAST" . 10469
+'UNIDENTIFIED BACULOVIRUS' . .
+3 3 4932 'SACCHAROMYCES CEREVISIAE' "BAKER'S YEAST" . 10469
+'UNIDENTIFIED BACULOVIRUS' . .
+4 4 4932 'SACCHAROMYCES CEREVISIAE' "BAKER'S YEAST" . 10469
+'UNIDENTIFIED BACULOVIRUS' . .
+#
+#
+loop_
+_struct_ref.id
+_struct_ref.entity_id
+_struct_ref.db_name
+_struct_ref.db_code
+_struct_ref.pdbx_db_accession
+_struct_ref.pdbx_align_begin
+_struct_ref.pdbx_seq_one_letter_code
+_struct_ref.details
+1 1 UNP SPC97_YEAST P38863 1
+;MEIKEVDDRAELLRYTNNIPLLGKLVNHQPLWSTNPKLKSFSLEKISAPDQRRVQEALVVKDLLNVLIGL
+EGTYIRYFNDYEPSDPETPIEFKIAKKMDPSFKTFSRRIVRYGKQYMILTRAYEKWSDTSFGMVLQRFAY
+EIRRFLEDVYLKTLVERLERDFNKVPNFSIRELEQIINETEVNKQMELLYNIYEEIFREIEERRTNQSSQ
+EDFNNFMDSMKNESSLHLRLMVAFDTTVYPVPKGGAILKIFQQKILENLGDRSSVMFLKKLLNNISQDYC
+TMLYEWLTQGILNDPYQEFMTYDDLEGKTDNIFDTRDRAWDTQYFIRKDVLLRDCDSEEDKNLLFKMLRT
+GILLKVVRASLQIPTIPSNSSDITIQEINDFADLMEGSNLELYVDKCYSRANEIFLKLFFQGYDLINVLK
+HLQQIFLGYQSGHNVLKFLTKNMGELTKHYRNDNNANYDKLLQNFELERQSENPNNLMRQLLMIQFDTET
+LPQVLSHYLQIYPEVPENNSANDDSDPLMHANNFKNMNAILFDELSKERTGAYHGSNLELYTPKSAIYHL
+KFDINIPYPLNIIISRTCMIKYQIILRYQLVLQYHSRLLDETWMDLNKTPSWKYRGYSHTVKRRIVRATR
+VLHAKMNHFIKTIMEYFNQNVIDKEVYSLEKCYRNPTLAVAIQNELEGGLTNIMTNRCLSDLIPLQLQIF
+DIVYKFCKFIKSMRAKLCQLDPVLYEKHKSGMMKTLNEGYRTNNGGQEDVGYQEDAALELIQKLIEYISN
+ASSIFRKCLINFTQELSTEKFDFYDSSSVDAAGIERVLYSIVPPRSASASSQR
+;
+'Spindle pole body component SPC97 OS=Saccharomyces cerevisiae (strain ATCC 204508 / S288c) OX=559292 GN=SPC97 PE=1 SV=1'
+2 2 UNP SPC98_YEAST P53540 1
+;MELEPTLFGIIEALAPQLLSQSHLQTFVSDVVNLLRSSTKSATQLGPLIDFYKLQSLDSPETTIMWHKIE
+KFLDALFGIQNTDDMVKYLSVFQSLLPSNYRAKIVQKSSGLNMENLANHEHLLSPVRAPSIYTEASFENM
+DRFSERRSMVSSPNRYVPSSTYSSVTLRQLSNPYYVNTIPEEDILKYVSYTLLATTSALFPFDHEQIQIP
+SKIPNFESGLLHLIFEAGLLYQSLGYKVEKFRMLNISPMKKALIIEISEELQNYTAFVNNLVSSGTVVSL
+KSLYREIYENIIRLRIYCRFTEHLEELSGDTFLIELNIFKSHGDLTIRKIATNLFNSMISLYYEYLMNWL
+TKGLLRATYGEFFIAENTDTNGTDDDFIYHIPIEFNQERVPAFIPKELAYKIFMIGKSYIFLEKYCKEVQ
+WTNEFSKKYHVLYQSNSYRGISTNFFEIINDQYSEIVNHTNQILNQKFHYRDVVFALKNILLMGKSDFMD
+ALIEKANDILATPSDSLPNYKLTRVLQEAVQLSSLRHLMNSPRNSSVINGLDARVLDLGHGSVGWDVFTL
+DYILYPPLSLVLNVNRPFGRKEYLRIFNFLWRFKKNNYFYQKEMLKSNDIIRSFKKIRGYNPLIRDIINK
+LSRISILRTQFQQFNSKMESYYLNCIIEENFKEMTRKLQRTENKSQNQFDLIRLNNGTIELNGILTPKAE
+VLTKSSSSKPQKHAIEKTLNIDELESVHNTFLTNILSHKLFATNTSEISVGDYSGQPYPTSLVLLLNSVY
+EFVKVYCNLNDIGYEIFIKMNLNDHEASNGLLGKFNTNLKEIVSQYKNFKDRLYIFRADLKNDGDEELFL
+LSKSLR
+;
+'Spindle pole body component SPC98 OS=Saccharomyces cerevisiae (strain ATCC 204508 / S288c) OX=559292 GN=SPC98 PE=1 SV=1'
+#
