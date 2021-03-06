@@ -1,0 +1,21 @@
+|directories|
+|pdb_dir|../../inputs/structure/|
+|fasta_dir|../../inputs/sequence/|
+
+|topology_dictionary|
+
+|molecule_name|color|fasta_fn|fasta_id|pdb_fn|chain|residue_range|pdb_offset|bead_size|em_residues_per_gaussian|rigid_body|super_rigid_body|chain_of_super_rigid_bodies|
+
+|Spc97      |light sea green |5flz.fasta    |5FLZA    |tusc_ref14_110_topology.pdb                 |A|1,END        |0   	  |20    |0   |  |  | |
+|Spc98      |blue            |5flz.fasta    |5FLZB    |tusc_ref14_110_topology.pdb                 |B|1,END        |0   	  |20    |0   |  |  | |
+|Tub4       |goldenrod      |5flz.fasta    |5FLZC    |tusc_ref14_110_topology.pdb                 |C|1,END        |0   	  |20    |0   |  |  | |
+|Tub4.1     |goldenrod      |5flz.fasta    |5FLZD    |tusc_ref14_110_topology.pdb                 |D|1,END        |0   	  |20    |0   |  |  | |
+
+|Spc110     |lime green    |Spc110_GS_1-220_dimer.fasta  |Spc110    |BEADS                  ||1,165       |0   	  |5    |0   |   |1  | |
+|Spc110     |lime green    |Spc110_GS_1-220_dimer.fasta  |Spc110    |tusc_ref14_110_topology.pdb     |E|166,205    |0   	  |10   |0   |   |  | |
+|Spc110     |lime green    |Spc110_GS_1-220_dimer.fasta    |Spc110  |BEADS                  ||206,222     |0   	  |5    |0   |   |1  | |
+
+
+|Spc110.1     |lime green    |Spc110_GS_1-220_dimer.fasta  |Spc110    |BEADS                  ||1,165       |0   	  |5    |0   |   |2 | |
+|Spc110.1     |lime green    |Spc110_GS_1-220_dimer.fasta  |Spc110    |tusc_ref14_110_topology.pdb     |F|166,205    |0   	  |10   |0   |   |  | |
+|Spc110.1     |lime green    |Spc110_GS_1-220_dimer.fasta  |Spc110    |BEADS                  ||206,222     |0   	  |5    |0   |   |2 | |
