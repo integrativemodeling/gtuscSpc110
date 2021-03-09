@@ -17,6 +17,14 @@ import IMP.pmi.io.crosslink
 import IMP.pmi.restraints.crosslinking
 import os,sys
 
+
+# Imports needed to use ProtocolOutput
+import IMP.pmi.mmcif
+import ihm
+import ihm.location
+import ihm.model
+import ihm.cross_linkers
+
 def add_gtusc_rep(mol,pdbfile,chain,unstructured_bead_size,clr):
     atomic = mol.add_structure(pdbfile,chain_id=chain,offset=0)
     mol.add_representation(atomic, resolutions=[1,20],color = clr)
@@ -45,14 +53,14 @@ nframes = 20000
 if '--test' in sys.argv:
     num_frames = 1000
 
-spc110_seq_file = '../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
+spc110_seq_file = '../../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
 
-gtusc_seq_file = '../inputs/sequence/5flz.fasta'
+gtusc_seq_file = '../../inputs/sequence/5flz.fasta'
 
-gtusc_pdbfile = '../inputs/structure/lateral_dimer_renamed.pdb'
+gtusc_pdbfile = '../../inputs/structure/lateral_dimer_renamed.pdb'
 
-edc_file =  '../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz180_edc30mins_q0.01_psm2.txt.INPUT.txt'
-dss_file =  '../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz110_dss3mins_q0.01_psm2.txt.INPUT.txt'
+edc_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz180_edc30mins_q0.01_psm2.txt.INPUT.txt'
+dss_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz110_dss3mins_q0.01_psm2.txt.INPUT.txt'
 
 GTUSC_FLEX_MAX_TRANS = 5.0
 
@@ -75,6 +83,15 @@ spc110_colors = {"Spc110":["lime green","lime green","lime green","lime green"]}
 # Setup System and add a State
 mdl = IMP.Model()
 s = IMP.pmi.topology.System(mdl)
+
+# Add deposition information
+po = IMP.pmi.mmcif.ProtocolOutput(None)
+s.add_protocol_output(po)
+po.system.title = "Integrative structure of the yeast gammaTuSC-Spc110 tetramer complex"
+# po.system.citations.append(ihm.Citation.from_pubmed_id(000000)) #TODO
+
+
+
 st = s.create_state()
 
 # Add Molecules for each component as well as representations
@@ -141,8 +158,6 @@ for i,mol in enumerate(spc110_mols):
    dof.create_super_rigid_body(spc110_mols[i].get_non_atomic_residues(),name="spc110_NTD_srb")
 
 #dof.create_rigid_body([spc110_mols[0][229:276],spc110_mols[1][229:276]],max_trans = 1.0 ,max_rot = 0.2,name="central_cc")
-
-print dof
 
 ####################### RESTRAINTS #####################
 output_objects = [] # keep a list of functions that need to be reported
@@ -240,7 +255,153 @@ mc1=IMP.pmi.macros.ReplicaExchange0(mdl,
                                     output_objects=output_objects,
                                     monte_carlo_steps=10,
                                     number_of_frames=nframes,
-                                     number_of_best_scoring_models=10
+                                     number_of_best_scoring_models=10,
+                                     test_mode=True
 				                   )
 
 mc1.execute_macro()
+
+
+po.finalize()
+
+s = po.system
+
+import ihm.dumper
+with open('initial_tetramer.cif', 'w') as fh:
+    ihm.dumper.write(fh, [s])
+for r in s.restraints:
+    if isinstance(r, ihm.restraint.CrossLinkRestraint):
+        print("XL-MS dataset at:", r.dataset.location.path)
+        print("Details:", r.dataset.location.details)
+
+edc,dss = [r for r in s.restraints
+               if isinstance(r, ihm.restraint.CrossLinkRestraint)]
+edc.linker = ihm.cross_linkers.edc
+dss.linker = ihm.cross_linkers.dss
+
+last_step = s.orphan_protocols[-1].steps[-1]
+print(last_step.num_models_end)
+last_step.num_models_end = 1000000 #20,000 models per run and 50 independent runs (6 cores per run)
+
+
+protocol = po.system.orphan_protocols[-1]
+analysis = ihm.analysis.Analysis()
+protocol.analyses.append(analysis)
+analysis.steps.append(ihm.analysis.ClusterStep(
+                      feature='RMSD', num_models_begin=1000000,
+                      num_models_end=2069))
+mg = ihm.model.ModelGroup(name="Cluster 0")
+
+po.system.state_groups[-1][-1].append(mg)
+
+e = ihm.model.Ensemble(model_group=mg,
+                       num_models=2069,
+                       post_process=analysis.steps[-1],
+                       name="Cluster 0",
+                       clustering_method='Density based threshold-clustering',
+                       clustering_feature='RMSD',
+                       precision='28.3'
+                       )
+po.system.ensembles.append(e)
+
+Uniprot={'Spc97.0':'P38863',
+         'Spc98.0':'P53540',
+         'Tub4.0':'P53378',
+         'Tub4.1':'P53378',
+         'Spc97.1':'P38863',
+         'Spc98.1':'P53540',
+         'Tub4.2':'P53378',
+         'Tub4.3':'P53378',
+         'Spc110.0':'P32380',
+         'Spc110.1':'P32380',
+          'Spc110.2':'P32380',
+          'Spc110.3':'P32380'}
+
+lpep = ihm.LPeptideAlphabet()
+
+# sequence taken from PDB 5flz, differs from canonical UniProt
+tub4_seq_dif_details = "Sequence matches that of PDB 5flz"
+tub4_seq_dif = [ihm.reference.SeqDif(58, lpep['S'], lpep['C'], details=tub4_seq_dif_details),
+                   ihm.reference.SeqDif(288, lpep['G'], lpep['C'], details=tub4_seq_dif_details)]
+
+for prot, entry in Uniprot.items():
+     ref = ihm.reference.UniProtSequence.from_accession(entry)
+
+     if prot.startswith('Tub4'):
+         ref.alignments.append(ihm.reference.Alignment(seq_dif = tub4_seq_dif))
+
+     if prot.startswith('Spc110'):
+         ref.alignments.append(ihm.reference.Alignment(db_begin=1,db_end=220,entity_begin=3,entity_end=222))
+
+     po.asym_units[prot].entity.references.append(ref)
+
+m = IMP.Model()
+inf1 = RMF.open_rmf_file_read_only('../../results/lateral_gtusc_spc110tetramer/cluster_center_model.rmf3')
+h = IMP.rmf.create_hierarchies(inf1, m)[0]
+IMP.rmf.link_hierarchies(inf1,[h])
+IMP.rmf.load_frame(inf1,RMF.FrameID(0))
+m.update()
+
+# for state in h1.get_children():
+#     comp={}
+#     for component in state.get_children():
+#             part1={}
+#             for i,leaf in enumerate(IMP.core.get_leaves(component)):
+#                 p=IMP.core.XYZ(leaf.get_particle())
+#                 part1[p.get_name()]=p.get_coordinates()
+#             comp[component.get_name()]=part1
+# del h1
+#
+# for state in root_hier.get_children():
+#     #comp2={}
+#     for component in state.get_children():
+#             #part2={}
+#             for i,leaf in enumerate(IMP.core.get_leaves(component)):
+#                 p=IMP.core.XYZ(leaf.get_particle())
+#                 if 'Residue' in p.get_name():
+#                     name=p.get_name().split('_')[1]
+#                 else:
+#                     name=p.get_name()
+#                 p.set_coordinates(comp[component.get_name()][name])
+#                 #part2[name]=p.get_coordinates()
+#             #comp2[component.get_name()]=part2
+
+model = po.add_model(e.model_group)
+print (e.model_group)
+
+repo = ihm.location.Repository(doi="10.5281/zenodo.4584458", root="../..",
+                  top_directory="gtuscSpc110-main",
+                  url="https://zenodo.org/record/4584458/files/gtuscSpc110-main.zip")
+
+loc_density_list={'Spc97.0':['Spc97'],
+         'Spc98.0':['Spc98'],
+         'Tub4.0':['Tub4'],
+         'Tub4.1':['Tub4'],
+         'Spc97.1':['Spc97'],
+         'Spc98.1':['Spc98'],
+         'Tub4.2':['Tub4'],
+          'Tub4.3':['Tub4'],
+         'Spc110.0':['Spc110.0'],
+         'Spc110.1':['Spc110.1'],
+         'Spc110.2':['Spc110.2'],
+         'Spc110.3':['Spc110.3']}
+
+for prot in loc_density_list:
+
+      asym = po.asym_units[prot]
+
+      for domain_density in loc_density_list[prot]:
+          loc = ihm.location.OutputFileLocation('../../results/lateral_gtusc_spc110tetramer/'+domain_density+'.mrc')
+          den = ihm.model.LocalizationDensity(file=loc, asym_unit=asym)
+          e.densities.append(den)
+
+po.system.update_locations_in_repositories([repo])
+
+po.finalize()
+with open('gtusc_Spc110_tetramer.cif', 'w') as fh:
+    ihm.dumper.write(fh, [po.system])
+
+import ihm.reader
+with open('gtusc_Spc110_tetramer.cif') as fh:
+    s, = ihm.reader.read(fh)
+print(s.title, s.restraints, s.ensembles, s.state_groups)

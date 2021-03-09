@@ -24,6 +24,29 @@ import ihm.location
 import ihm.model
 import ihm.cross_linkers
 
+
+def add_gtusc_rep(mol,pdbfile,chain,unstructured_bead_size,clr):
+    atomic = mol.add_structure(pdbfile,chain_id=chain,offset=0)
+    mol.add_representation(atomic, resolutions=[1,20],color = clr)
+    mol.add_representation(mol[:]-atomic,resolutions=[unstructured_bead_size],color=clr)
+    return mol
+
+def add_spc110_rep(mol,gtusc_pdbfile,gtusc_chain,gtusc_pdb_offset,unstructured_bead_size,clr):
+    # two pdbfiles to load Spc110 from: one is the coiled coil region bound to gtusc and the other is the extra coiled coil region    # at C terminus
+
+    gtusc_cc_structure = mol.add_structure(gtusc_pdbfile,chain_id=gtusc_chain,offset=gtusc_pdb_offset)
+    # OR translate one of the chains a bit and run like below
+    mol.add_representation(gtusc_cc_structure, resolutions=[1,10],color = clr)
+
+    #central_cc_structure = mol.add_structure(central_cc_pdb_file,chain_id=central_cc_chain,offset=central_cc_offset,ca_only=True,soft_check=True)
+    #mol.add_representation(central_cc_structure, resolutions=[1,10],color = clr)
+
+    #mol.add_representation(mol[:]-gtusc_cc_structure-central_cc_structure,resolutions=[unstructured_bead_size],color = clr)
+
+    mol.add_representation(mol[:]-gtusc_cc_structure,resolutions=[unstructured_bead_size],color = clr)
+
+    return(mol)
+
 ###################### SYSTEM SETUP #####################
 # Parameters to tweak
 
@@ -31,52 +54,111 @@ nframes = 10000
 if '--test' in sys.argv:
     num_frames = 1000
 
-# Topology File
-topology_file = "../../scripts/mmcif/topology_dimer.txt"
+
+spc110_seq_file = '../../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
+
+gtusc_seq_file = '../../inputs/sequence/5flz.fasta'
+
+gtusc_pdbfile = '../../inputs/structure/tusc_ref14_110.pdb'
+
 
 edc_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz180_edc30mins_q0.01_psm2.txt.INPUT.txt'
 dss_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz110_dss3mins_q0.01_psm2.txt.INPUT.txt'
 
-# GTUSC_FLEX_MAX_TRANS = 5.0
-# SPC110_FLEX_MAX_TRANS = 4.0 # for nterm region
-# Common max trans parameter defined for all beads as the topology reader can only accomodate one max_trans
-# This is used in place of the original GTUSC_FLEX_MAX_TRANS and SPC110_FLEX_MAX_TRANS
-FLEX_MAX_TRANS = 4.0
+GTUSC_FLEX_MAX_TRANS = 5.0
 
-# All IMP systems start out with a Model
+SPC110_FLEX_MAX_TRANS = 4.0 # for nterm region
+
+gtusc_missing_structure_bead_size = 20
+spc110_cg_bead_size = 5
+
+# Input sequences
+gtusc_seqs = IMP.pmi.topology.Sequences(gtusc_seq_file)
+
+spc110_seqs = IMP.pmi.topology.Sequences(spc110_seq_file)
+
+#TODO change while changing stoichiometry
+gtusc_components = {"Spc97":['A'],"Spc98":['B'],"Tub4":['C','D']}
+spc110_components = {"Spc110":['E','F'],"Spc110_ccc":['A','B']}
+gtusc_colors = {"Spc97":["light sea green"],"Spc98":["blue"],"Tub4":["goldenrod","goldenrod"]}
+spc110_colors = {"Spc110":["lime green","lime green"]}
+
+# Setup System and add a State
 mdl = IMP.Model()
-
-# Read the topology file for a given state
-t = IMP.pmi.topology.TopologyReader(topology_file)
-
-# Create a BuildSystem macro to and add a state from a topology file
-bs = IMP.pmi.macros.BuildSystem(mdl)
+s = IMP.pmi.topology.System(mdl)
 
 # Add deposition information
 po = IMP.pmi.mmcif.ProtocolOutput(None)
-
-bs.system.add_protocol_output(po)
-po.system.title = "Integrative structure and function of the yeast gammaTuSC-Spc110 complex"
+s.add_protocol_output(po)
+po.system.title = "Integrative structure of the yeast gammaTuSC-Spc110 dimer complex"
 # po.system.citations.append(ihm.Citation.from_pubmed_id(000000)) #TODO
 
-
-bs.add_state(t)
-
-# executing the macro will return the root hierarchy and degrees of freedom (dof) objects
-root_hier, dof = bs.execute_macro(max_rb_trans= 1.0,
-                                  max_rb_rot= 0.1,
-                                  max_bead_trans= FLEX_MAX_TRANS)
+st = s.create_state()
 
 # Add Molecules for each component as well as representations
+mols = []
 gtusc_mols = []
+
+# first for gtusc
+for prot in gtusc_components:
+
+    for i,chain in enumerate(gtusc_components[prot]):
+        if i==0:
+            mol= st.create_molecule(prot,sequence=gtusc_seqs['5FLZ'+chain],chain_id=chain)
+            firstmol = mol
+        else:
+            mol =  firstmol.create_copy(chain_id=chain)
+
+        color = gtusc_colors[prot][i]
+        mol = add_gtusc_rep(mol,gtusc_pdbfile,chain,gtusc_missing_structure_bead_size,color)
+        mols.append(mol)
+        gtusc_mols.append(mol)
+
+# next for Spc110.
 spc110_mols = []
 
-for mol in root_hier.get_children()[0].get_children():
+for i,chain in enumerate(spc110_components['Spc110']):
 
-    if IMP.atom.Molecule(mol).get_name() == "Spc110":
-        spc110_mols.append(mol)
+    if i==0:
+       mol = st.create_molecule('Spc110', sequence=spc110_seqs['Spc110'],chain_id=chain)
     else:
-        gtusc_mols.append(mol)
+       mol = spc110_mols[0].create_copy(chain_id = chain)
+
+    color = spc110_colors['Spc110'][i]
+
+    (mol) = add_spc110_rep(mol,gtusc_pdbfile,chain,2,spc110_cg_bead_size,color)
+    spc110_mols.append(mol)
+    mols.append(mol)
+
+##  calling System.build() creates all States and Molecules (and their representations)
+##  Once you call build(), anything without representation is destroyed.
+##  You can still use handles like molecule[a:b], molecule.get_atomic_residues() or molecule.get_non_atomic_residues()
+##  However these functions will only return BUILT representations
+root_hier = s.build()
+
+# Setup degrees of freedom
+#  The DOF functions automatically select all resolutions
+#  Objects passed to nonrigid_parts move with the frame but also have their own independent movers.
+dof = IMP.pmi.dof.DegreesOfFreedom(mdl)
+
+# Move regions of gTuSC with unknown structure
+gtusc_unstructured = []
+for mol in gtusc_mols:
+    gtusc_unstructured.append(mol.get_non_atomic_residues())
+
+dof.create_flexible_beads(gtusc_unstructured,max_trans = GTUSC_FLEX_MAX_TRANS)
+
+# DOF for Spc110
+for i,mol in enumerate(spc110_mols):
+   # create a rigid body for each helix
+
+   # create floppy movers for the unstructured part
+   dof.create_flexible_beads(spc110_mols[i].get_non_atomic_residues(),max_trans = SPC110_FLEX_MAX_TRANS)
+   #get_non_atomic_residues is a set earlier before build, after that it returns built representations.
+
+   dof.create_super_rigid_body(spc110_mols[i].get_non_atomic_residues(),name="spc110_NTD_srb")
+
+#dof.create_rigid_body([spc110_mols[0][229:276],spc110_mols[1][229:276]],max_trans = 1.0 ,max_rot = 0.2,name="central_cc")
 
 ####################### RESTRAINTS #####################
 output_objects = [] # keep a list of functions that need to be reported
@@ -84,7 +166,7 @@ display_restraints = [] # display as springs in RMF
 
 # Connectivity keeps things connected along the backbone (ignores if inside same rigid body)
 crs = []
-for mol in root_hier.get_children()[0].get_children():
+for mol in mols:
     cr = IMP.pmi.restraints.stereochemistry.ConnectivityRestraint(mol,scale=4.0)
     cr.add_to_model()
     output_objects.append(cr)
@@ -154,16 +236,8 @@ output_objects.append(dsr)
 
 ####################### SAMPLING #####################
 # First shuffle the system
-# fixing the coiled-coil that is bound to gtusc
-spc110_nterm_beads = []
-
-for cp in [0,1]:
-    spc110_nterm_beads+= IMP.atom.Selection(root_hier,molecule='Spc110',copy_index=cp,residue_indexes=range(0,163)).get_selected_particles()
-
-IMP.pmi.tools.shuffle_configuration(spc110_nterm_beads,max_translation=50)
-
-# above 4 code lines are meant to replace the following lines
-# IMP.pmi.tools.shuffle_configuration([spc110_mols[0][0:163],spc110_mols[1][0:163]],max_translation=50)
+#IMP.pmi.tools.shuffle_configuration([spc110_mols[0][0:163],spc110_mols[1][0:163],spc110_mols[0][203:276],spc110_mols[1][203:276]],max_translation=30)
+IMP.pmi.tools.shuffle_configuration([spc110_mols[0][0:163],spc110_mols[1][0:163]],max_translation=50)
 # fixing the coiled-coil that is bound to gtusc
 
 # Quickly move all flexible beads into place
@@ -192,7 +266,7 @@ po.finalize()
 s = po.system
 
 import ihm.dumper
-with open('initial.cif', 'w') as fh:
+with open('initial_dimer.cif', 'w') as fh:
     ihm.dumper.write(fh, [s])
 for r in s.restraints:
     if isinstance(r, ihm.restraint.CrossLinkRestraint):
@@ -236,44 +310,54 @@ Uniprot={'Spc97.0':'P38863',
          'Spc110.0':'P32380',
          'Spc110.1':'P32380'}
 
+lpep = ihm.LPeptideAlphabet()
+
+# sequence taken from PDB 5flz, differs from canonical UniProt
+tub4_seq_dif_details = "Sequence matches that of PDB 5flz"
+tub4_seq_dif = [ihm.reference.SeqDif(58, lpep['S'], lpep['C'], details=tub4_seq_dif_details),
+                   ihm.reference.SeqDif(288, lpep['G'], lpep['C'], details=tub4_seq_dif_details)]
+
 for prot, entry in Uniprot.items():
      ref = ihm.reference.UniProtSequence.from_accession(entry)
 
      if prot.startswith('Tub4'):
-         ref.Alignment(seq_dif=[ihm.reference.SeqDif(58,ihm.ChemComp(code='S'),ihm.ChemComp(code='C')),
-          ihm.reference.SeqDif(288,ihm.ChemComp(code='G'),ihm.ChemComp(code='C'))])
+         ref.alignments.append(ihm.reference.Alignment(seq_dif = tub4_seq_dif))
+
+     if prot.startswith('Spc110'):
+         ref.alignments.append(ihm.reference.Alignment(db_begin=1,db_end=220,entity_begin=3,entity_end=222))
 
      po.asym_units[prot].entity.references.append(ref)
 
-
-
-m1 = IMP.Model()
+m = IMP.Model()
 inf1 = RMF.open_rmf_file_read_only('../../results/gtusc_spc110dimer/cluster_center_model.rmf3')
-h1 = IMP.rmf.create_hierarchies(inf1, m1)[0]
+h = IMP.rmf.create_hierarchies(inf1, m)[0]
+IMP.rmf.link_hierarchies(inf1,[h])
+IMP.rmf.load_frame(inf1,RMF.FrameID(0))
+m.update()
 
-for state in h1.get_children():
-    comp={}
-    for component in state.get_children():
-            part1={}
-            for i,leaf in enumerate(IMP.core.get_leaves(component)):
-                p=IMP.core.XYZ(leaf.get_particle())
-                part1[p.get_name()]=p.get_coordinates()
-            comp[component.get_name()]=part1
-del h1
-
-for state in root_hier.get_children():
-    #comp2={}
-    for component in state.get_children():
-            #part2={}
-            for i,leaf in enumerate(IMP.core.get_leaves(component)):
-                p=IMP.core.XYZ(leaf.get_particle())
-                if 'Residue' in p.get_name():
-                    name=p.get_name().split('_')[1]
-                else:
-                    name=p.get_name()
-                p.set_coordinates(comp[component.get_name()][name])
-                #part2[name]=p.get_coordinates()
-            #comp2[component.get_name()]=part2
+# for state in h1.get_children():
+#     comp={}
+#     for component in state.get_children():
+#             part1={}
+#             for i,leaf in enumerate(IMP.core.get_leaves(component)):
+#                 p=IMP.core.XYZ(leaf.get_particle())
+#                 part1[p.get_name()]=p.get_coordinates()
+#             comp[component.get_name()]=part1
+# del h1
+#
+# for state in root_hier.get_children():
+#     #comp2={}
+#     for component in state.get_children():
+#             #part2={}
+#             for i,leaf in enumerate(IMP.core.get_leaves(component)):
+#                 p=IMP.core.XYZ(leaf.get_particle())
+#                 if 'Residue' in p.get_name():
+#                     name=p.get_name().split('_')[1]
+#                 else:
+#                     name=p.get_name()
+#                 p.set_coordinates(comp[component.get_name()][name])
+#                 #part2[name]=p.get_coordinates()
+#             #comp2[component.get_name()]=part2
 
 model = po.add_model(e.model_group)
 print (e.model_group)
