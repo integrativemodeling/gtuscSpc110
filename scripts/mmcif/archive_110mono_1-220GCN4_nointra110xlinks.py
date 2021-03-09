@@ -358,9 +358,9 @@ m.update()
 model = po.add_model(e.model_group)
 print (e.model_group)
 
-repo = ihm.location.Repository(doi="10.5281/zenodo.4584458", root="../..",
+repo = ihm.location.Repository(doi="10.5281/zenodo.4584457", root="../..",
                   top_directory="gtuscSpc110-main",
-                  url="https://zenodo.org/record/4584458/files/gtuscSpc110-main.zip")
+                  url="https://zenodo.org/record/4584457/files/gtuscSpc110-main.zip")
 
 loc_density_list={'Spc97.0':['Spc97'],
          'Spc98.0':['Spc98'],
