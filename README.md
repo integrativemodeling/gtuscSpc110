@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4584457.svg)](https://doi.org/10.5281/zenodo.4584457)
+
 # Integrative model of the γTuSC-Spc110 complex
 
 This repository pertains to the integrative model of the  γTuSC-Spc110 complex based on data from cryo-EM, chemical crosslinking, and X-ray crystallography.
