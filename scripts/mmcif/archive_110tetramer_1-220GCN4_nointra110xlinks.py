@@ -1,6 +1,7 @@
 
 """This script samples Spc110 in conjunction with gammaTuSC.
 """
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom

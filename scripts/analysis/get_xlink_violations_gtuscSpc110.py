@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import os,sys
 import subprocess
 
@@ -118,7 +119,7 @@ num_violated_in_all_models = 0
 for rst in Analysis.violation_counts:
     if Analysis.violation_counts[rst] == len(model_indices): # violated in all models
         num_violated_in_all_models+=1
-        print "Violated ",rst
+        print("Violated ",rst)
 
-print "Number of crosslinks violated in all models",num_violated_in_all_models
+print("Number of crosslinks violated in all models",num_violated_in_all_models)
 

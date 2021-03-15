@@ -1,6 +1,7 @@
 
 """This script samples Spc110 in conjunction with gammaTuSC.
 """
+from __future__ import print_function
 import IMP
 import RMF
 import IMP.atom
@@ -142,7 +143,7 @@ for i,mol in enumerate(spc110_mols):
 
 #dof.create_rigid_body([spc110_mols[0][229:276],spc110_mols[1][229:276]],max_trans = 1.0 ,max_rot = 0.2,name="central_cc")
 
-print dof
+print(dof)
 
 ####################### RESTRAINTS #####################
 output_objects = [] # keep a list of functions that need to be reported
