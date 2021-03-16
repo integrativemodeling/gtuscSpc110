@@ -47,15 +47,15 @@ nframes = 10000
 if '--test' in sys.argv:
     num_frames = 1000
 
-spc110_seq_file = '../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
+spc110_seq_file = '../../inputs/sequence/Spc110_GS_1-220_dimer.fasta'
 
-gtusc_seq_file = '../inputs/sequence/5flz.fasta'
+gtusc_seq_file = '../../inputs/sequence/5flz.fasta'
 
-gtusc_pdbfile = '../inputs/structure/tusc_ref14_110.pdb'
+gtusc_pdbfile = '../../inputs/structure/tusc_ref14_110.pdb'
 
 
-edc_file =  '../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz180_edc30mins_q0.01_psm2.txt.INPUT.txt'
-dss_file =  '../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz110_dss3mins_q0.01_psm2.txt.INPUT.txt'
+edc_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz180_edc30mins_q0.01_psm2.txt.INPUT.txt'
+dss_file =  '../../inputs/xlinks/spc110_1_220_GCN4dimer_rjaz110_dss3mins_q0.01_psm2.txt.INPUT.txt'
 
 GTUSC_FLEX_MAX_TRANS = 5.0
 
