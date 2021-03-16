@@ -204,7 +204,7 @@ kw_edc.set_residue2_key("POSITION2")
 xldb_edc = IMP.pmi.io.crosslink.CrossLinkDataBase(kw_edc)
 xldb_edc.create_set_from_file(edc_file)
 
-xlr_edc = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(root_hier=root_hier,database=xldb_edc,length=18.0,label="XLEDC",filelabel='edc',resolution=1,slope=0.03)
+xlr_edc = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(root_hier=root_hier,database=xldb_edc,length=18.0,label="XLEDC",filelabel='edc',resolution=1,slope=0.03,linker=ihm.cross_linkers.edc)
 
 xlr_edc.add_to_model()
 xlr_edc.set_weight(15.0)
@@ -221,7 +221,7 @@ kw_dss.set_residue2_key("POSITION2")
 xldb_dss = IMP.pmi.io.crosslink.CrossLinkDataBase(kw_dss)
 xldb_dss.create_set_from_file(dss_file)
 
-xlr_dss = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(root_hier=root_hier,database=xldb_dss,length=28.0,label="XLDSS",filelabel='dss',resolution=1,slope=0.03)
+xlr_dss = IMP.pmi.restraints.crosslinking.CrossLinkingMassSpectrometryRestraint(root_hier=root_hier,database=xldb_dss,length=28.0,label="XLDSS",filelabel='dss',resolution=1,slope=0.03,linker=ihm.cross_linkers.dss)
 
 xlr_dss.add_to_model()
 xlr_dss.set_weight(15.0)
@@ -274,11 +274,6 @@ for r in s.restraints:
     if isinstance(r, ihm.restraint.CrossLinkRestraint):
         print("XL-MS dataset at:", r.dataset.location.path)
         print("Details:", r.dataset.location.details)
-
-edc,dss = [r for r in s.restraints
-               if isinstance(r, ihm.restraint.CrossLinkRestraint)]
-edc.linker = ihm.cross_linkers.edc
-dss.linker = ihm.cross_linkers.dss
 
 last_step = s.orphan_protocols[-1].steps[-1]
 print(last_step.num_models_end)
