@@ -63,4 +63,4 @@ _Testable_: Yes.
 _Parallelizeable_: Yes
 
 _Publications_:
- - Brilot, Axel F., Andrew Lyon, Alex Zelter, Shruthi Viswanath, Alison Maxwell, Michael J. MacCoss, Eric G. Muller, Andrej Sali, Trisha N. Davis, and David A. Agard. "CM1-driven assembly and activation of Yeast γ-Tubulin Small Complex underlies microtubule nucleation." bioRxiv (2020).
+ - Brilot, Axel F., Andrew Lyon, Alex Zelter, Shruthi Viswanath, Alison Maxwell, Michael J. MacCoss, Eric G. Muller, Andrej Sali, Trisha N. Davis, and David A. Agard. "CM1-driven assembly and activation of Yeast γ-Tubulin Small Complex underlies microtubule nucleation." eLife, 10:e65168, 2021.
