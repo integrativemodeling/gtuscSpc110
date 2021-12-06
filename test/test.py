@@ -193,7 +193,7 @@ class Tests(unittest.TestCase):
     def _check_mmcif_file(self, fname):
         with open(fname) as fh:
             s, = ihm.reader.read(fh)
-        self.assertEqual(len(s.citations), 0)
+        self.assertEqual(len(s.citations), 2)
         self.assertEqual(len(s.software), 2)
         return s
 
