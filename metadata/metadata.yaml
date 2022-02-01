@@ -1,6 +1,6 @@
 title: γTuSC-Spc110 Complex
 tags: [chemical crosslinks, cryo-EM, X-ray]
-pmid:
+pmid: 33949948
 accessions: [PDBDEV_00000077,PDBDEV_00000078,PDBDEV_00000079]
 prereqs: [python/scikit, python/matplotlib, python/numpy]
 test:
