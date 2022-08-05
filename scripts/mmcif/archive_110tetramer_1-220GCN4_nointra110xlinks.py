@@ -293,9 +293,10 @@ e = ihm.model.Ensemble(model_group=mg,
                        num_models=2069,
                        post_process=analysis.steps[-1],
                        name="Cluster 0",
-                       clustering_method='Density based threshold-clustering',
+                       clustering_method='Other',
                        clustering_feature='RMSD',
-                       precision='28.3'
+                       precision='28.3',
+                       details='Density based threshold-clustering'
                        )
 po.system.ensembles.append(e)
 
