@@ -234,7 +234,7 @@ dof.optimize_flexible_beads(100)
 
 
 # Run replica exchange Monte Carlo sampling
-mc1=IMP.pmi.macros.ReplicaExchange0(mdl,
+mc1=IMP.pmi.macros.ReplicaExchange(mdl,
                                     root_hier=root_hier,                          # pass the root hierarchy
                                     monte_carlo_temperature = 1.0,
                                     replica_exchange_minimum_temperature = 1.0,
